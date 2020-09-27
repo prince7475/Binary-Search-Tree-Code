@@ -1,0 +1,152 @@
+
+class Node {
+	constructor(value){
+		this.value = value;
+		this.left = null;
+		this.right = null;
+}
+}
+
+
+
+
+
+
+
+
+
+class BST {
+	constructor(){
+		this.root = null
+		this.nodeCount = 0
+}
+
+getLevelOrder(){
+  let result = []
+  let queue = [this.root]
+  while(queue.length){
+    const node = queue.shift();
+    result.push(node.value)
+    if(node.left){
+      queue.push(node.left)
+    }
+    if(node.right){
+      queue.push(node.right)
+    }
+  }
+  return result
+}
+
+add(value){
+  this.nodeCount++
+	this.root = this.addHelper(this.root, value)
+}
+
+addHelper(root,value){
+	if(root === null){
+		root = new Node(value)
+		return root
+}else if(root.value > value){
+	root.left = this.addHelper(root.left,value)
+}else {
+	root.right = this.addHelper(root.right,value)
+}
+
+return root
+}
+
+getInorder(){
+	const result = []
+	return this.getInOrderHelper(this.root,result)
+}
+
+getInOrderHelper(root,result){
+	if(root === null){
+		return
+}
+  this.getInOrderHelper(root.left,result)
+  result.push(root.value)
+  this.getInOrderHelper(root.right,result)
+  return result
+}
+
+remove(value){
+    return this.removeHelper(this.root,null,value)
+}
+
+removeHelper(node,parent,value){
+  if(node === null){
+    return false;
+  }
+  if(value < node.value){
+    return this.removeHelper(node.left,node,value)
+  }else if(value > node.value){
+    return this.removeHelper(node.right,node,value)
+  }else {
+    if(node.left && node.right){
+      let lowestValueOnRight = this.getLowestValueOnRight(node.right)
+      node.value = lowestValueOnRight
+      console.log('lowestValueOnRight',lowestValueOnRight)
+      return this.removeHelper(node.right,node,lowestValueOnRight)
+    }else if(node.left || node.right){
+      if(parent){
+        if(parent.left === node){
+          parent.left = node.left ? node.left : node.right
+        }else {
+          parent.right = node.left ? node.left : node.right
+        }
+      }else {
+        node = node.left ? node.left : node.right
+      }
+    }else {
+        if(parent){
+          if(parent.left === node){
+            parent.left = null
+          }else {
+            parent.right = null
+          }
+        }else {
+          node.value = null
+        }
+    }
+
+  }
+  this.nodeCount--
+  return true
+}
+
+getLowestValueOnRight(node){
+  let temp = node
+  while(temp.left){
+    temp = temp.left
+  }
+  return temp.value
+}
+
+
+
+
+}
+
+
+const bst = new BST();
+bst.add(5)
+bst.add(3)
+bst.add(2)
+bst.add(4)
+bst.add(7)
+bst.add(10)
+bst.add(0)
+bst.add(1)
+bst.add(29)
+bst.add(11)
+bst.add(16)
+// console.log(bst.getInorder())
+console.log(bst.getLevelOrder())
+bst.remove(29)
+console.log(bst.getLevelOrder())
+
+// console.log(bst.getInorder())
+console.log(bst)
+
+
